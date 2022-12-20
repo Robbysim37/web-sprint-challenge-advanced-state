@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react'
 import { connect } from 'react-redux'
-import { fetchQuiz,selectAnswer } from "../state/action-creators"
+import { fetchQuiz,selectAnswer,postAnswer } from "../state/action-creators"
 
 export function Quiz(props) {
 
@@ -12,6 +12,10 @@ if(!props.quizState)
 
   const answerSelectHandler = (e) => {
     props.selectAnswer(e.target.id)
+  }
+
+  const submitAnswerHandler = () => {
+    props.postAnswer(props.quizState.quiz_id,props.selectedAnswerState === "question_1" ? props.quizState.answers[0].answer_id : props.quizState.answers[1].answer_id)
   }
 
   return (
@@ -39,7 +43,7 @@ if(!props.quizState)
             </div>
 
               {/* submitAnswersBtn must send an object: {quiz_id:data,answer_id:data} */}
-            <button id="submitAnswerBtn" disabled={!props.selectedAnswerState}>Submit answer</button>
+            <button onClick={submitAnswerHandler} id="submitAnswerBtn" disabled={!props.selectedAnswerState}>Submit answer</button>
           </>
         ) : 'Loading next quiz...'
       }
@@ -53,4 +57,4 @@ const mapStateToProps = state => ({
 })
 
 
-export default connect(mapStateToProps,{fetchQuiz,selectAnswer})(Quiz)
+export default connect(mapStateToProps,{fetchQuiz,selectAnswer,postAnswer})(Quiz)
