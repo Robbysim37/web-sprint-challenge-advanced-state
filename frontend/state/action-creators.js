@@ -6,7 +6,8 @@ import {
   MOVE_COUNTERCLOCKWISE,
   SET_QUIZ_TO_LOADING,
   SET_QUIZ_INTO_STATE,
-  SET_SELECTED_ANSWER} from "./action-types"
+  SET_SELECTED_ANSWER,
+  SET_INFO_MESSAGE} from "./action-types"
 
 export function moveClockwise() {
   return {type: MOVE_CLOCKWISE}
@@ -39,12 +40,21 @@ export function fetchQuiz() {
     .then(res => dispatch({type:SET_QUIZ_INTO_STATE,payload:res.data}))
   }
 }
-export function postAnswer() {
+export function postAnswer(quizId,answerId) {
   return function (dispatch) {
     // On successful POST:
     // - Dispatch an action to reset the selected answer state
     // - Dispatch an action to set the server message to state
     // - Dispatch the fetching of the next quiz
+    axios.post("http://localhost:9000/api/quiz/answer",{quiz_id:quizId,answer_id:answerId})
+    .then(res => {
+      dispatch({type:SET_INFO_MESSAGE,payload:res.data.message})
+      dispatch({type:SET_SELECTED_ANSWER,payload:null})
+      dispatch({type:SET_QUIZ_TO_LOADING})
+      axios.get("http://localhost:9000/api/quiz/next")
+      .then(res => dispatch({type:SET_QUIZ_INTO_STATE,payload:res.data}))
+    })
+    
   }
 }
 export function postQuiz() {
