@@ -6,7 +6,9 @@ import {
   SET_QUIZ_TO_LOADING,
   SET_QUIZ_INTO_STATE,
   SET_SELECTED_ANSWER,
-  SET_INFO_MESSAGE } from './action-types'
+  SET_INFO_MESSAGE,
+  INPUT_CHANGE,
+  RESET_FORM } from './action-types'
 
 const initialWheelState = 0
 function wheel(state = initialWheelState, action) {
@@ -59,6 +61,15 @@ const initialFormState = {
   newFalseAnswer: '',
 }
 function form(state = initialFormState, action) {
+  switch(action.type){
+    case INPUT_CHANGE:
+      return {
+        ...state,
+        [action.payload.inputId]: action.payload.inputValue
+      }
+    case RESET_FORM:
+      return initialFormState
+  }
   return state
 }
 
